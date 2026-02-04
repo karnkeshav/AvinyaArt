@@ -41,7 +41,7 @@ fun LoginScreen(navController: NavController) {
                     // Geo Validation (Mock Location)
                     statusMessage = "Validating Location..."
                     val geo = RetrofitClient.api.validateGeo(
-                        com.example.ddcp.network.GeoValidateRequest(26.05, 86.05, 1) // Center of mock polygon
+                        com.originalityshield.network.GeoValidateRequest(26.05, 86.05, 1) // Center of mock polygon
                     )
 
                     if (geo.valid) {
