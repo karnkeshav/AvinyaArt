@@ -30,18 +30,18 @@ interface TaskDao {
 }
 
 @Database(entities = [OfflineTask::class], version = 1)
-abstract class AppDatabase : RoomDatabase() {
+abstract class TaskDatabase : RoomDatabase() {
     abstract fun taskDao(): TaskDao
 
     companion object {
         @Volatile
-        private var INSTANCE: AppDatabase? = null
+        private var INSTANCE: TaskDatabase? = null
 
-        fun getDatabase(context: Context): AppDatabase {
+        fun getDatabase(context: Context): TaskDatabase {
             return INSTANCE ?: synchronized(this) {
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    AppDatabase::class.java,
+                    TaskDatabase::class.java,
                     "ddcp_database"
                 ).build()
                 INSTANCE = instance
