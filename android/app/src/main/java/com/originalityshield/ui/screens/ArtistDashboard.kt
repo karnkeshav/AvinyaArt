@@ -21,7 +21,8 @@ fun ArtistDashboard(navController: NavController, userId: Int) {
     LaunchedEffect(userId) {
         scope.launch {
             try {
-                tasks = RetrofitClient.api.getAssignments(userId)
+                // The API now identifies the user from the Auth Token automatically
+                tasks = RetrofitClient.api.getAssignments()
             } catch (e: Exception) {
                 // Handle error
             }

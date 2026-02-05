@@ -22,7 +22,8 @@ fun TeamLeaderConsole(navController: NavController) {
     LaunchedEffect(Unit) {
         scope.launch {
             try {
-                tasks = RetrofitClient.api.getAssignments(1)
+                // The API now identifies the user from the Auth Token automatically
+                tasks = RetrofitClient.api.getAssignments()
             } catch (e: Exception) {
                 // Handle error
             }

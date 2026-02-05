@@ -7,13 +7,16 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
+import java.util.concurrent.TimeUnit
 
 // DTOs
+data class UserLogin(val username: String, val password: String)
+
 data class Token(
     @SerializedName("access_token") val accessToken: String,
     @SerializedName("token_type") val tokenType: String,
-    @SerializedName("user_id") val userId: Int,
-    val role: String
+    @SerializedName("user_id") val userId: Int? = null,
+    val role: String? = null
 )
 
 data class GeoValidateRequest(
@@ -55,18 +58,14 @@ data class SubmissionResponse(
 )
 
 interface ApiService {
-    @FormUrlEncoded
     @POST("auth/login")
-    suspend fun login(
-        @Field("username") username: String,
-        @Field("password") password: String
-    ): Token
+    suspend fun login(@Body login: UserLogin): Token
 
     @POST("auth/geo/validate")
     suspend fun validateGeo(@Body request: GeoValidateRequest): GeoResponse
 
     @GET("tasks/assignments")
-    suspend fun getAssignments(@Query("user_id") userId: Int): List<Task>
+    suspend fun getAssignments(): List<Task> // Removed userId parameter
 
     @POST("tasks/submit/{task_id}")
     suspend fun submitTask(@Path("task_id") taskId: Int, @Body submission: TaskSubmission): SubmissionResponse
@@ -82,6 +81,7 @@ object RetrofitClient {
 
     private val authInterceptor = Interceptor { chain ->
         val requestBuilder = chain.request().newBuilder()
+        requestBuilder.addHeader("Connection", "close")
         authToken?.let {
             requestBuilder.addHeader("Authorization", "Bearer $it")
         }
@@ -91,6 +91,9 @@ object RetrofitClient {
     private val client = OkHttpClient.Builder()
         .addInterceptor(authInterceptor)
         .addInterceptor(loggingInterceptor)
+        .connectTimeout(60, TimeUnit.SECONDS)
+        .readTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
         .build()
 
     val api: ApiService by lazy {
