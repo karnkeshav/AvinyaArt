@@ -32,7 +32,7 @@ fun CreativeCanvas(navController: NavController, taskId: Int) {
 
     // Telemetry capture
     val pressureSamples = remember { mutableListOf<Float>() }
-    val velocitySamples = remember { mutableListOf<Float>() } // Simplified for now
+    val velocitySamples = remember { mutableListOf<Float>() }
     val jitterSamples = remember { mutableListOf<Float>() }
     val timestamps = remember { mutableListOf<Long>() }
 
@@ -92,20 +92,19 @@ fun CreativeCanvas(navController: NavController, taskId: Int) {
                     try {
                         submissionStatus = "Submitting..."
                         val telemetry = TelemetryData(
-                            user_id = 1, // Mocked, ideally from session
-                            pressure_samples = pressureSamples.toList(),
-                            velocity_samples = velocitySamples.toList(),
-                            jitter_samples = jitterSamples.toList(),
-                            stroke_timestamps = timestamps.toList()
+                            userId = 1, // Mocked
+                            pressureSamples = pressureSamples.toList(),
+                            velocitySamples = velocitySamples.toList(),
+                            jitterSamples = jitterSamples.toList(),
+                            strokeTimestamps = timestamps.toList()
                         )
 
                         val response = RetrofitClient.api.submitTask(
                             taskId,
-                            TaskSubmission(submission_url = "http://mock-url.com/img.png", telemetry_data = telemetry)
+                            TaskSubmission(submissionUrl = "http://mock-url.com/img.png", telemetryData = telemetry)
                         )
 
-                        submissionStatus = "Submitted! Human Score: ${response.human_confidence}"
-                        // Optionally navigate back
+                        submissionStatus = "Submitted! Human Score: ${response.humanConfidence}"
                     } catch (e: Exception) {
                         submissionStatus = "Error: ${e.message}"
                     }

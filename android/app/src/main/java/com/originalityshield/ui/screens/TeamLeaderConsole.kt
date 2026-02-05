@@ -19,13 +19,9 @@ fun TeamLeaderConsole(navController: NavController) {
     var tasks by remember { mutableStateOf<List<Task>>(emptyList()) }
     val scope = rememberCoroutineScope()
 
-    // In real app, we would have a different API to get ALL tasks or team tasks
-    // For prototype, we mock fetching tasks for a specific user or all pending
-
     LaunchedEffect(Unit) {
         scope.launch {
             try {
-                // Mock: get assignments for a user to see something
                 tasks = RetrofitClient.api.getAssignments(1)
             } catch (e: Exception) {
                 // Handle error
@@ -61,8 +57,8 @@ fun ReviewCard(task: Task) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
-            Text(task.artwork_title, style = MaterialTheme.typography.titleSmall)
-            Text("Seg: ${task.segment_index}")
+            Text(task.artworkTitle, style = MaterialTheme.typography.titleSmall)
+            Text("Seg: ${task.segmentIndex}")
             Text("Status: ${task.status}")
             Spacer(modifier = Modifier.weight(1f))
             Row {

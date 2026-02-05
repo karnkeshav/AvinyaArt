@@ -8,9 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.originalityshield.network.RetrofitClient
-import com.originalityshield.network.UserLogin
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(navController: NavController) {
     var username by remember { mutableStateOf("artist1") }
@@ -36,7 +36,8 @@ fun LoginScreen(navController: NavController) {
             scope.launch {
                 try {
                     statusMessage = "Authenticating..."
-                    val response = RetrofitClient.api.login(UserLogin(username, password))
+                    val response = RetrofitClient.api.login(username, password)
+                    RetrofitClient.authToken = response.accessToken
 
                     // Geo Validation (Mock Location)
                     statusMessage = "Validating Location..."
@@ -48,7 +49,7 @@ fun LoginScreen(navController: NavController) {
                         if (response.role == "team_leader") {
                             navController.navigate("leader")
                         } else {
-                            navController.navigate("dashboard/${response.user_id}")
+                            navController.navigate("dashboard/${response.userId}")
                         }
                     } else {
                         statusMessage = "Location Check Failed: ${geo.message}"

@@ -36,7 +36,7 @@ fun ArtistDashboard(navController: NavController, userId: Int) {
         LazyColumn {
             items(tasks) { task ->
                 TaskItem(task) {
-                    navController.navigate("canvas/${task.task_id}")
+                    navController.navigate("canvas/${task.taskId}")
                 }
             }
         }
@@ -50,8 +50,8 @@ fun TaskItem(task: Task, onClick: () -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(task.artwork_title, style = MaterialTheme.typography.titleLarge)
-            Text("Segment: ${task.segment_index}")
+            Text(task.artworkTitle, style = MaterialTheme.typography.titleLarge)
+            Text("Segment: ${task.segmentIndex}")
             Text("Status: ${task.status}")
         }
     }
