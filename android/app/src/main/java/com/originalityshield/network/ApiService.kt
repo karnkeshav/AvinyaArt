@@ -3,6 +3,7 @@ package com.originalityshield.network
 import com.google.gson.annotations.SerializedName
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Protocol
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -28,15 +29,14 @@ data class GeoValidateRequest(
 data class GeoResponse(val valid: Boolean, val message: String)
 
 data class Task(
-    @SerializedName("task_id") val taskId: Int,
-    @SerializedName("artwork_title") val artworkTitle: String,
-    @SerializedName("segment_index") val segmentIndex: Int,
-    @SerializedName("master_image_url") val masterImageUrl: String,
-    val x: Int,
-    val y: Int,
-    val width: Int,
-    val height: Int,
-    val status: String
+    @SerializedName("id") val taskId: Int,
+    // We use @SerializedName to map potential backend field names
+    @SerializedName("artwork_title", alternate = ["title"]) val artworkTitle: String? = "Village Mural",
+    @SerializedName("segment_index", alternate = ["index"]) val segmentIndex: Int? = 1,
+    @SerializedName("master_image_url") val masterImageUrl: String? = null,
+    @SerializedName("segment_id") val segmentId: Int? = null,
+    @SerializedName("assignee_id") val assigneeId: Int? = null,
+    val status: String? = "pending"
 )
 
 data class TelemetryData(
@@ -65,7 +65,7 @@ interface ApiService {
     suspend fun validateGeo(@Body request: GeoValidateRequest): GeoResponse
 
     @GET("tasks/assignments")
-    suspend fun getAssignments(): List<Task> // Removed userId parameter
+    suspend fun getAssignments(): List<Task>
 
     @POST("tasks/submit/{task_id}")
     suspend fun submitTask(@Path("task_id") taskId: Int, @Body submission: TaskSubmission): SubmissionResponse
@@ -91,6 +91,7 @@ object RetrofitClient {
     private val client = OkHttpClient.Builder()
         .addInterceptor(authInterceptor)
         .addInterceptor(loggingInterceptor)
+        .protocols(listOf(Protocol.HTTP_1_1))
         .connectTimeout(60, TimeUnit.SECONDS)
         .readTimeout(60, TimeUnit.SECONDS)
         .writeTimeout(60, TimeUnit.SECONDS)

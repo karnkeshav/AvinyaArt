@@ -58,9 +58,10 @@ fun ReviewCard(task: Task) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
-            Text(task.artworkTitle, style = MaterialTheme.typography.titleSmall)
-            Text("Seg: ${task.segmentIndex}")
-            Text("Status: ${task.status}")
+            // Safely handle nullable properties with default values
+            Text(task.artworkTitle ?: "Untitled Artwork", style = MaterialTheme.typography.titleSmall)
+            Text("Seg: ${task.segmentIndex ?: "N/A"}")
+            Text("Status: ${task.status ?: "Unknown"}")
             Spacer(modifier = Modifier.weight(1f))
             Row {
                 Button(onClick = { /* Approve Logic */ }, modifier = Modifier.weight(1f)) {

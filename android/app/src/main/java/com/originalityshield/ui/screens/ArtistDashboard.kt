@@ -51,9 +51,10 @@ fun TaskItem(task: Task, onClick: () -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(task.artworkTitle, style = MaterialTheme.typography.titleLarge)
-            Text("Segment: ${task.segmentIndex}")
-            Text("Status: ${task.status}")
+            // Safely handle nullable properties with default values
+            Text(task.artworkTitle ?: "Untitled Artwork", style = MaterialTheme.typography.titleLarge)
+            Text("Segment: ${task.segmentIndex ?: "N/A"}")
+            Text("Status: ${task.status ?: "Unknown"}")
         }
     }
 }
